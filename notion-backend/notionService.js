@@ -51,6 +51,18 @@ export async function createProblem(problem, topicIds) {
       Status: {
         select: { name: "Solved" }
       }
+}
+  });
+}
+
+export async function checkProblemExists(title) {
+  const response = await notion.post(`/databases/${process.env.PROBLEMS_DB_ID}/query`, {
+    filter: {
+      property: "Name",
+      title: {
+        equals: title
+      }
     }
   });
+  return response.data.results.length > 0;
 }

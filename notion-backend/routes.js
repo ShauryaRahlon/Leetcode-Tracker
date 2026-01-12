@@ -1,12 +1,22 @@
 import express from "express";
 
-import { getOrCreateTopic, createProblem  } from "./notionService.js";
+import { getOrCreateTopic, createProblem, checkProblemExists } from "./notionService.js";
 
 const router=express.Router();
 
 router.post("/add-problem", async (req, res) => {
   try {
     const { title, difficulty, url, topics } = req.body;
+    
+    //check if it already exists in db
+    const exists = await checkProblemExists(title);
+    if(exists){
+      return res.status(409).json({error:"Already exists in db"});
+    }
+    
+    if (!topics || !Array.isArray(topics)) {
+      return res.status(400).json({ error: "Topics must be an array" });
+    }
 
     const topicIds = [];
     for (const t of topics) {
