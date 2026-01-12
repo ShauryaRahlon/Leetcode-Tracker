@@ -12,7 +12,7 @@ router.post("/add-problem", async (req, res) => {
     for (const t of topics) {
       topicIds.push(await getOrCreateTopic(t));
     }
-    console.log("gin")
+    console.log("Processing add-problem request: Creating Problem page...");
     await createProblem({ title, difficulty, url }, topicIds);
     res.json({ success: true });
   } catch (err) {
