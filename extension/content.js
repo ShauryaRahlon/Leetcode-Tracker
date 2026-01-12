@@ -1,18 +1,37 @@
 
 // --- Helper Functions ---
+// --- Helper Functions ---
+// --- Helper Functions ---
 function scrapeLeetCodeData() {
   let title = document.title.split('-')[0].trim();
   const url = window.location.href;
 
-  let difficulty = 'Medium'; 
-  const textContent = document.body.innerText;
-  const easy = textContent.match(/Easy/);
-  const medium = textContent.match(/Medium/);
-  const hard = textContent.match(/Hard/);
+  let difficulty = 'Unknown'; 
   
-  if (easy && !medium && !hard) difficulty = 'Easy';
-  else if (!easy && medium && !hard) difficulty = 'Medium';
-  else if (!easy && !medium && hard) difficulty = 'Hard';
+  // Strategy: Check for specific "text-difficulty-*" classes
+  const isEasy = document.querySelector('.text-difficulty-easy');
+  const isMedium = document.querySelector('.text-difficulty-medium');
+  const isHard = document.querySelector('.text-difficulty-hard');
+
+  if (isEasy) difficulty = 'Easy';
+  else if (isMedium) difficulty = 'Medium';
+  else if (isHard) difficulty = 'Hard';
+  else {
+      // Fallback: Check text content of the difficulty badge specifically
+      // effectively looking for the div that contains "Easy", "Medium", "Hard"
+      // but excluding the similar questions area
+      const difficultyElement = document.querySelector('div.text-difficulty-medium, div.text-difficulty-easy, div.text-difficulty-hard');
+      if (difficultyElement) {
+          difficulty = difficultyElement.textContent;
+      } else {
+        // Last resort: simple text match on body, default to Medium if ambiguous
+        const text = document.body.innerText;
+        if(text.includes('Easy')) difficulty = 'Easy';
+        else if(text.includes('Medium')) difficulty = 'Medium';
+        else if(text.includes('Hard')) difficulty = 'Hard';
+        else difficulty = 'Medium';
+      }
+  }
 
   let topics = ['LeetCode'];
   const topicElements = document.querySelectorAll('a[href^="/tag/"]');
