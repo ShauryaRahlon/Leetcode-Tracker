@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    .loading { color: orange; }
+  </style>
+</head>
+<body>
+  <h2>LeetCode Notion</h2>
+  <button id="saveBtn">Save to Notion</button>
+  <div id="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html>
