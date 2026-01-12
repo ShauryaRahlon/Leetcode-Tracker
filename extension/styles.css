@@ -1,0 +1,107 @@
+/* Floating Action Button (FAB) */
+.notion-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(30, 30, 30, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2147483647; /* Max z-index */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.notion-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+  background: rgba(40, 40, 40, 0.9);
+}
+
+.notion-fab:active {
+  transform: scale(0.95);
+}
+
+.notion-fab img {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+}
+
+/* Tooltip */
+.notion-fab::after {
+  content: 'Save to Notion';
+  position: absolute;
+  right: 60px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.notion-fab:hover::after {
+  opacity: 1;
+  visibility: visible;
+  right: 65px;
+}
+
+/* Loading State */
+.notion-fab.loading {
+  cursor: wait;
+}
+
+.notion-fab.loading img {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Toast Notifications */
+.notion-toast {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: rgba(30, 30, 30, 0.9);
+  backdrop-filter: blur(10px);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateX(120%);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-left: 4px solid #3b82f6; /* Default Blue */
+}
+
+.notion-toast.show {
+  transform: translateX(0);
+}
+
+.notion-toast.success {
+  border-left-color: #22c55e;
+}
+
+.notion-toast.error {
+  border-left-color: #ef4444;
+}

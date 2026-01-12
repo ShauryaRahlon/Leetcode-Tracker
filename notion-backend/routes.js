@@ -31,4 +31,8 @@ router.post("/add-problem", async (req, res) => {
   }
 });
 
+router.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 export default router;

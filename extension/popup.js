@@ -43,3 +43,26 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
       console.error(err);
     }
   });
+
+// Check backend health on load
+async function checkHealth() {
+  const dot = document.getElementById('dot');
+  const text = document.getElementById('conn-text');
+  
+  try {
+    const res = await fetch('http://localhost:5001/api/health');
+    const data = await res.json();
+    
+    if (res.ok && data.status === 'ok') {
+      dot.style.backgroundColor = '#22c55e'; // Green
+      text.textContent = 'Backend connected';
+    } else {
+      throw new Error('Invalid response');
+    }
+  } catch (err) {
+    dot.style.backgroundColor = '#ef4444'; // Red
+    text.textContent = 'Backend disconnected (Is it running?)';
+  }
+}
+
+checkHealth();

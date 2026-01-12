@@ -1,57 +1,128 @@
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'scrape') {
-      const data = scrapeLeetCodeData();
-      sendResponse(data);
-    }
-  });
+
+// --- Helper Functions ---
+function scrapeLeetCodeData() {
+  let title = document.title.split('-')[0].trim();
+  const url = window.location.href;
+
+  let difficulty = 'Medium'; 
+  const textContent = document.body.innerText;
+  const easy = textContent.match(/Easy/);
+  const medium = textContent.match(/Medium/);
+  const hard = textContent.match(/Hard/);
   
-  function scrapeLeetCodeData() {
-    // 1. Title
-    // Title is usually in document.title "Two Sum - LeetCode"
-    // Or in the header element
-    let title = document.title.split('-')[0].trim();
-    
-    // 2. URL
-    const url = window.location.href;
-  
-    // 3. Difficulty
-    // This is tricky as classes change. We look for the difficulty text.
-    let difficulty = 'Medium'; // Default
-    const difficultyColors = ['text-green-500', 'text-yellow-500', 'text-red-500', 'text-olive', 'text-brand-orange', 'text-pink'];
-    // Try to find an element with these classes and text content Easy/Medium/Hard
-    const easy = document.body.innerText.match(/Easy/);
-    const medium = document.body.innerText.match(/Medium/);
-    const hard = document.body.innerText.match(/Hard/);
-    
-    // A more specific approach: Look for the difficulty chip
-    // In new UI, it's often a div with specific coloring classes
-    // We can try to infer from the presence of "Easy", "Medium", "Hard" in the top section
-    
-    // Fallback: Check if we can find specific elements
-    // This part is brittle and might need updates.
-    if (easy && !medium && !hard) difficulty = 'Easy';
-    else if (!easy && medium && !hard) difficulty = 'Medium';
-    else if (!easy && !medium && hard) difficulty = 'Hard';
-    // If multiple found (e.g. in related problems), we might be wrong. 
-    // Let's try to find the specific element in the description header if possible.
-    
-    // 4. Topics
-    // Topics are often hidden under a "Topics" tab or button.
-    // Ideally we want to expand it or just grab what is visible.
-    // For now, let's just grab the title and URL primarily.
-    // We will send 'Uncategorized' if none found.
-    let topics = ['LeetCode'];
-    
-    // Try to find topic tags
-    const topicElements = document.querySelectorAll('a[href^="/tag/"]');
-    if (topicElements.length > 0) {
-        topics = Array.from(topicElements).map(el => el.innerText);
-    }
-  
-    return {
-      title,
-      difficulty,
-      url,
-      topics
-    };
+  if (easy && !medium && !hard) difficulty = 'Easy';
+  else if (!easy && medium && !hard) difficulty = 'Medium';
+  else if (!easy && !medium && hard) difficulty = 'Hard';
+
+  let topics = ['LeetCode'];
+  const topicElements = document.querySelectorAll('a[href^="/tag/"]');
+  if (topicElements.length > 0) {
+      topics = Array.from(topicElements).map(el => el.innerText);
   }
+
+  return { title, difficulty, url, topics };
+}
+
+function showToast(message, type = 'info') {
+  let toast = document.querySelector('.notion-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'notion-toast';
+    document.body.appendChild(toast);
+  }
+
+  // Icon based on type
+  let icon = 'ℹ️';
+  if (type === 'success') icon = '✅';
+  if (type === 'error') icon = '❌';
+
+  toast.textContent = `${icon} ${message}`;
+  toast.className = `notion-toast ${type} show`;
+
+  // Auto hide
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+
+// --- Messaging Support ---
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'scrape') {
+    const data = scrapeLeetCodeData();
+    sendResponse(data);
+  }
+});
+
+async function sendToNotion(data, btn) {
+  try {
+    btn.classList.add('loading');
+    
+    // Delegate to Background Script to avoid CORS/Mixed Content issues
+    const response = await chrome.runtime.sendMessage({
+        action: 'saveProblem',
+        data: data
+    });
+
+    if (response && response.success) {
+      showToast('Problem saved to Notion!', 'success');
+    } else {
+      throw new Error(response?.error || 'Unknown error');
+    }
+  } catch (err) {
+    console.error(err);
+    let msg = err.message;
+    if (msg.includes('Receiving end does not exist')) {
+        msg = 'Extension background script not ready. Reload extension.';
+    }
+    showToast(msg, 'error');
+  } finally {
+    btn.classList.remove('loading');
+  }
+}
+
+// --- Injection Logic ---
+
+function createFAB() {
+  const fab = document.createElement('div');
+  fab.className = 'notion-fab';
+  fab.title = 'Save to Notion';
+  
+  // Use extension icon
+  const iconUrl = chrome.runtime.getURL('icons/icon48.png');
+  const img = document.createElement('img');
+  img.src = iconUrl;
+  fab.appendChild(img);
+  
+  fab.onclick = (e) => {
+    e.stopPropagation(); // Prevent clicks passing through
+    const data = scrapeLeetCodeData();
+    sendToNotion(data, fab);
+  };
+  
+  return fab;
+}
+
+function tryInjectFAB() {
+    if (document.querySelector('.notion-fab')) return;
+    
+    const fab = createFAB();
+    document.body.appendChild(fab);
+    console.log('Notion FAB injected');
+}
+
+// --- Observer ---
+// Keep observer to ensure FAB stays if page re-renders heavily (less critical for FAB but good safety)
+const observer = new MutationObserver((mutations) => {
+    if (!document.querySelector('.notion-fab')) {
+        tryInjectFAB();
+    }
+});
+
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+// Initial try
+setTimeout(tryInjectFAB, 1000); // 1s delay to be safe
