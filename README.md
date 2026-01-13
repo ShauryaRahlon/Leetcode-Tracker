@@ -45,3 +45,7 @@ Visit `http://localhost:3000` to view the comprehensive setup and usage guides.
 1.  Open a problem on LeetCode.
 2.  Click the floating "Save" button in the bottom-right corner.
 3.  Verify the entry in your Notion database.
+
+## Detailed Setup
+For a complete guide on setting up the Notion integration, including how to generate tokens and automatically create the required databases, please refer to [SETUP.md](./SETUP.md).
+

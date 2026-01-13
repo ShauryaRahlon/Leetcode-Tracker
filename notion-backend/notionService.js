@@ -1,18 +1,26 @@
 import { notion } from "./notionClient.js";
 
 export async function getOrCreateTopic(topic){
+    const cleanTopic = topic.trim();
+    console.log(`DEBUG: Querying topic: '${cleanTopic}'`);
+    
     const res=await notion.post(
         `/databases/${process.env.TOPICS_DB_ID}/query`,
         {
             filter:{
                 property:"Topic Name",
-                title:{equals:topic}
+                title:{equals:cleanTopic}
             }
         }
     );
+    
+    console.log(`DEBUG: Found ${res.data.results.length} matches for '${cleanTopic}'`);
+    
     if(res.data.results.length>0){
         return res.data.results[0].id;
     }
+    
+    console.log(`DEBUG: Creating new topic: '${cleanTopic}'`);
     const created=await notion.post("/pages",{
         parent:{
             type:"database_id",
@@ -22,7 +30,7 @@ export async function getOrCreateTopic(topic){
             "Topic Name":{
                 title:[
                     {
-                        text:{content:topic}
+                        text:{content:cleanTopic}
                     }
                 ]
             }
