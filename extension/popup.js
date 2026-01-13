@@ -20,7 +20,7 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
       statusDiv.textContent = 'Sending to Notion...';
       
       // Send data to backend
-      const res = await fetch('http://localhost:5001/api/add-problem', {
+      const res = await fetch(`${CONFIG.API_BASE_URL}/api/add-problem`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ async function checkHealth() {
   const text = document.getElementById('conn-text');
   
   try {
-    const res = await fetch('http://localhost:5001/api/health');
+    const res = await fetch(`${CONFIG.API_BASE_URL}/api/health`);
     const data = await res.json();
     
     if (res.ok && data.status === 'ok') {

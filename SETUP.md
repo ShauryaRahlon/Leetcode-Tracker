@@ -59,7 +59,20 @@ TOPICS_DB_ID=id_from_script_output
 PROBLEMS_DB_ID=id_from_script_output
 ```
 
-## Step 5: Start the Backend
+PROBLEMS_DB_ID=id_from_script_output
+```
+
+## Step 5: Configure Extension
+
+The extension needs to know where your backend is running.
+
+1.  Navigate to the `extension/` folder.
+2.  Duplicate `config.example.js` and rename it to `config.js`.
+3.  Open `config.js` and update `API_BASE_URL`:
+    *   **Local Development**: Use `http://localhost:5001`
+    *   **Production**: Use your Render URL (e.g., `https://your-app.onrender.com`)
+
+## Step 6: Start the Backend
 
 Now you can start the backend server:
 

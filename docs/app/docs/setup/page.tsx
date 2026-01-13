@@ -98,6 +98,40 @@ PORT=5001`}</CodeBlock>
       <section className="space-y-8">
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-foreground text-background font-bold text-sm">3</div>
+          <h2 className="text-2xl font-semibold tracking-tight">Extension Configuration</h2>
+        </div>
+        
+        <div className="ml-0 md:ml-12 space-y-6">
+          <div className="p-6 rounded-xl border border-border bg-card shadow-sm">
+            <h3 className="font-medium mb-4">Set API URL</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              The extension needs to know where your backend is running.
+            </p>
+            <div className="space-y-4">
+                <div className="grid gap-2">
+                    <div className="text-sm text-muted-foreground">Navigate to extension folder:</div>
+                    <CodeBlock>cd extension</CodeBlock>
+                </div>
+                <div className="grid gap-2">
+                    <div className="text-sm text-muted-foreground">Duplicate config file:</div>
+                    <CodeBlock>cp config.example.js config.js</CodeBlock>
+                </div>
+                <div className="grid gap-2">
+                    <div className="text-sm text-muted-foreground">Update <code>config.js</code>:</div>
+                    <CodeBlock>{`const CONFIG = {
+  // Local Development: http://localhost:5001
+  // Production: https://your-app.onrender.com
+  API_BASE_URL: 'http://localhost:5001' 
+};`}</CodeBlock>
+                </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-8">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-foreground text-background font-bold text-sm">4</div>
           <h2 className="text-2xl font-semibold tracking-tight">Extension Installation</h2>
         </div>
         
@@ -109,7 +143,7 @@ PORT=5001`}</CodeBlock>
                     1
                 </span>
                 <h3 className="font-medium text-lg">Open Extensions Page</h3>
-                <p className="text-sm text-muted-foreground mt-1">Navigate to <CodeBlock className="inline-block p-1 bg-muted rounded text-xs align-middle">chrome://extensions</CodeBlock> in Chrome.</p>
+                <div className="text-sm text-muted-foreground mt-1">Navigate to <CodeBlock className="inline-block p-1 bg-muted rounded text-xs align-middle">chrome://extensions</CodeBlock> in Chrome.</div>
               </li>
               <li className="ml-6">
                  <span className="absolute flex items-center justify-center w-6 h-6 bg-muted rounded-full -left-3 ring-4 ring-background">
@@ -123,7 +157,7 @@ PORT=5001`}</CodeBlock>
                     3
                 </span>
                 <h3 className="font-medium text-lg">Load Unpacked</h3>
-                <p className="text-sm text-muted-foreground mt-1">Click the button and select the <CodeBlock className="inline-block p-1 bg-muted rounded text-xs align-middle">extension</CodeBlock> folder from the project.</p>
+                <div className="text-sm text-muted-foreground mt-1">Click the button and select the <CodeBlock className="inline-block p-1 bg-muted rounded text-xs align-middle">extension</CodeBlock> folder from the project.</div>
               </li>
             </ol>
           </div>

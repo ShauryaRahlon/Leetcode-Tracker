@@ -1,4 +1,6 @@
 
+importScripts('config.js');
+
 // Background Service Worker
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'saveProblem') {
@@ -11,7 +13,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 async function handleSaveProblem(data) {
   try {
-    const res = await fetch('http://localhost:5001/api/add-problem', {
+    const res = await fetch(`${CONFIG.API_BASE_URL}/api/add-problem`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
