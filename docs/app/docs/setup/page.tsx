@@ -5,7 +5,7 @@ export default function SetupPage() {
   return (
     <div className="max-w-4xl mx-auto py-12 px-4">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-orange-400">
+        <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-400 to-gray-600">
           Setup Guide
         </h1>
         <p className="text-muted-foreground text-lg">
