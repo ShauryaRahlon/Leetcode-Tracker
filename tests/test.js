@@ -17,7 +17,7 @@ async function test() {
     const res = await notion.post("/pages", {
       parent: {
         type: "page_id",
-        page_id: "2e432f20c678808f9a8efa555d8d46db"
+        page_id: "2e432f2078808f9a8efa555d8d46db"
       },
       properties: {
         title: {
